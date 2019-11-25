@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Buffer Playground</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<div id="app"></div>
+<script async type="module" src="index.js"></script>
+<script id="app-template" type="text/x-template">
+    <div id="app">
+        <canvas-buffer :cols="cols" :rows="rows" v-model="buffer" label="Primary"/>
+        <canvas-buffer :cols="cols" :rows="rows" v-model="buffer" label="Secondary" :scale="scale"/>
+    </div>
+</script>
+<script id="canvas-buffer-template" type="text/x-template">
+    <section>
+        <table>
+            <thead>
+            <tr>
+                <th colspan="6" v-text="label"></th>
+            </tr>
+            <tr>
+                <th>Cols</th>
+                <th>Rows</th>
+                <th>Scale</th>
+                <th>Width</th>
+                <th>Height</th>
+                <th>FPS</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td v-text="cols"></td>
+                <td v-text="rows"></td>
+                <td v-text="scale"></td>
+                <td v-text="width"></td>
+                <td v-text="height"></td>
+                <td v-text="`${prettyFPS} (${fps.length} samples)`"></td>
+            </tr>
+            </tbody>
+        </table>
+        <form @submit.prevent>
+            <div class="row" v-for="y in height" :key="y">
+                <div class="col" v-for="x in width" :key="x" :style="style">
+                    <input v-if="scale === 1"
+                           type="number"
+                           v-model.number="buffer[(y - 1) * cols * 4 + (x - 1) * 4 + (n - 1)]"
+                           v-for="n in 4" :key="n"
+                           min="0" max="255" step="1">
+                    <span v-else v-text="`000${buffer[(y - 1) * cols * 4 + (x - 1) * 4 + (n - 1)]}`.slice(-3)"></span>
+                </div>
+            </div>
+        </form>
+    </section>
+</script>
+</body>
+</html>
